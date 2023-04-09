@@ -4,7 +4,7 @@
 
 int index(int x, int y, int N)
 {
-    return y * N + x;
+    return y * (N + 2) + x;
 }
 
 void initialize_circular_velocity_field(std::vector<float>& u_grid, 
@@ -22,8 +22,17 @@ void initialize_circular_velocity_field(std::vector<float>& u_grid,
 
             // normalize 
             float len = sqrt(s * s + t * t);
-            s = s / len;
-            t = t / len;
+
+            if (len == 0)
+            {
+                s = 1;
+                t = 0;
+            }
+            else 
+            {
+                s = s / len;
+                t = t / len;
+            }
 
             // create tangent vector on the circle by swapping x & y components of the 
             // radial vector

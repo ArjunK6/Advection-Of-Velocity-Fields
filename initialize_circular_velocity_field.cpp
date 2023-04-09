@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <iomanip>
 
 int index(int x, int y, int N)
 {
-    return y * N + x;
+    return y * (N + 2) + x;
 }
 
 void create_circular_vel_field(int N, std::vector<float>& u_vec,
@@ -29,9 +30,17 @@ void create_circular_vel_field(int N, std::vector<float>& u_vec,
 
             // normalize the vectors
             float len_tangent = sqrt(tx * tx + ty * ty);
-
-            tx /= len_tangent;
-            ty /= len_tangent;
+            
+            if (len_tangent == 0)
+            {
+                tx = 1;
+                ty = 0;
+            }
+            else
+            {
+                tx /= len_tangent;
+                ty /= len_tangent;
+            }
 
             u_vec[index(x, y, N)] = tx;
             v_vec[index(x, y, N)] = ty;
@@ -39,7 +48,31 @@ void create_circular_vel_field(int N, std::vector<float>& u_vec,
     }
 }
 
+void print_grid(const std::vector<float>& vec, int N)
+{
+    std::cout << std::fixed << std::setprecision(3); 
+    for (int count = 0; auto i: vec)
+    {
+        std::cout << i << ", ";
+        ++count;
+        if (count % (N + 2) == 0)
+            std::cout << std::endl;
+    }
+    std::cout << "----------------------------------" << std::endl << std::endl;
+}
+
 int main()
 {
+    int N = 2;
+    std::vector<float> u_grid((N + 2) * (N + 2));
+    std::vector<float> v_grid((N + 2) * (N + 2));
+    print_grid(u_grid, N);
+    print_grid(v_grid, N);
+
+    create_circular_vel_field(N, u_grid, v_grid);
+
+    print_grid(u_grid, N);
+    print_grid(v_grid, N);
+
     return 0;
 }
